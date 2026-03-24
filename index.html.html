@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>入社手続きフォーム｜有限会社施行サービス</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:#f5f4f0;color:#1a1a1a;min-height:100vh;-webkit-text-size-adjust:100%;}
+.page{display:none;}
+.page.active{display:block;}
+.wrap{max-width:680px;margin:0 auto;padding:1.25rem 1rem 5rem;}
+.welcome-card{background:#fff;border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;border:1px solid #e5e3dc;}
+.welcome-logo{font-size:11px;color:#888;margin-bottom:4px;}
+.welcome-title{font-size:19px;font-weight:600;margin-bottom:8px;}
+.welcome-body{font-size:13px;color:#555;line-height:1.8;}
+.admin-link{text-align:right;margin-bottom:.75rem;}
+.admin-link a{font-size:11px;color:#ccc;text-decoration:none;cursor:pointer;padding:4px 0;}
+.admin-link a:hover{color:#888;}
+.progress-wrap{margin-bottom:1.5rem;}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:6px;}
+.progress-bar{height:4px;background:#e5e3dc;border-radius:2px;}
+.progress-fill{height:4px;background:#1a1a1a;border-radius:2px;transition:width .35s;}
+.section{display:none;}
+.section.active{display:block;}
+.step-label{font-size:17px;font-weight:600;margin-bottom:4px;}
+.step-desc{font-size:13px;color:#666;margin-bottom:1.25rem;line-height:1.7;}
+.field-group{margin-bottom:1.5rem;}
+.group-title{font-size:13px;font-weight:600;color:#555;padding-bottom:6px;border-bottom:1px solid #e5e3dc;margin-bottom:12px;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:13px;margin-bottom:4px;font-weight:500;}
+.req{color:#d94040;font-size:11px;margin-left:3px;background:#fdf0f0;padding:1px 5px;border-radius:3px;}
+.opt{color:#999;font-size:11px;margin-left:3px;}
+.field-hint{font-size:11px;color:#999;margin-top:3px;line-height:1.6;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+input[type=text],input[type=date],input[type=tel],input[type=email],input[type=month],select,textarea{
+  width:100%;padding:10px 12px;font-size:16px;
+  font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
+  border:1px solid #d0cec7;border-radius:8px;background:#fff;color:#1a1a1a;outline:none;
+  -webkit-appearance:none;appearance:none;transition:border-color .15s,box-shadow .15s;}
+input:focus,select:focus,textarea:focus{border-color:#1a1a1a;box-shadow:0 0 0 3px rgba(26,26,26,.08);}
+textarea{resize:vertical;min-height:80px;line-height:1.7;font-size:14px;}
+.notice{border-radius:8px;padding:11px 13px;font-size:13px;line-height:1.7;margin-bottom:1.1rem;}
+.notice.info{background:#eef4fb;color:#1a5276;border:1px solid #c5daf5;}
+.notice.warn{background:#fef9ec;color:#7d5a00;border:1px solid #f5dfa0;}
+.notice.success{background:#f0faf5;color:#1a6640;border:1px solid #a8dfc0;}
+.doc-list{display:flex;flex-direction:column;gap:8px;}
+.doc-item{display:flex;gap:12px;align-items:flex-start;padding:13px;border:1px solid #e5e3dc;border-radius:8px;cursor:pointer;transition:all .15s;background:#fff;}
+.doc-item:hover{border-color:#b0aea8;}
+.doc-item.checked{border-color:#2e8b5a;background:#f0faf5;}
+.doc-item input[type=checkbox]{width:18px;height:18px;margin-top:1px;flex-shrink:0;cursor:pointer;accent-color:#2e8b5a;}
+.doc-item-title{font-size:14px;font-weight:500;margin-bottom:2px;}
+.doc-item.checked .doc-item-title{color:#2e8b5a;}
+.doc-item-note{font-size:12px;color:#666;line-height:1.6;}
+.doc-badge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:99px;margin-left:5px;vertical-align:middle;}
+.doc-badge.must{background:#fdf0f0;color:#d94040;}
+.doc-badge.cond{background:#f0f0f0;color:#888;}
+.confirm-block{background:#faf9f7;border-radius:10px;padding:13px 15px;margin-bottom:10px;border:1px solid #e5e3dc;}
+.confirm-block-title{font-size:12px;font-weight:600;color:#888;margin-bottom:8px;}
+.confirm-row{display:flex;gap:10px;padding:5px 0;border-bottom:1px solid #ece9e3;font-size:13px;}
+.confirm-row:last-child{border-bottom:none;}
+.confirm-row .lbl{color:#888;min-width:110px;flex-shrink:0;}
+.confirm-row .val{color:#1a1a1a;font-weight:500;word-break:break-all;}
+.btn-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.75rem;gap:10px;}
+.btn{padding:12px 24px;font-size:15px;font-family:inherit;border-radius:8px;cursor:pointer;border:1px solid #d0cec7;background:#fff;color:#1a1a1a;font-weight:500;transition:all .15s;-webkit-tap-highlight-color:transparent;}
+.btn:hover{background:#f5f4f0;}
+.btn.primary{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
+.btn.primary:hover{background:#333;}
+.btn.primary:disabled{background:#888;border-color:#888;cursor:not-allowed;}
+.btn.ghost{border:none;background:none;color:#888;padding-left:0;}
+.btn.ghost:hover{color:#1a1a1a;background:none;}
+.btn.danger{background:#fff;color:#d94040;border:1px solid #f5c0c0;}
+.btn.danger:hover{background:#fdf0f0;}
+.complete-wrap{text-align:center;padding:2.5rem 1rem;}
+.check-circle{width:68px;height:68px;border-radius:50%;background:#f0faf5;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;border:2px solid #2e8b5a;}
+.check-circle svg{width:34px;height:34px;stroke:#2e8b5a;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.complete-h{font-size:21px;font-weight:600;margin-bottom:10px;}
+.complete-p{font-size:14px;color:#555;line-height:1.9;margin-bottom:1.5rem;}
+.complete-note{background:#fff;border:1px solid #e5e3dc;border-radius:10px;padding:15px 17px;font-size:13px;color:#555;text-align:left;line-height:1.9;}
+.pw-wrap{max-width:360px;margin:0 auto;padding:3.5rem 1.5rem 2rem;text-align:center;}
+.pw-logo{font-size:11px;color:#888;margin-bottom:5px;}
+.pw-title{font-size:20px;font-weight:600;margin-bottom:5px;}
+.pw-sub{font-size:13px;color:#666;margin-bottom:1.75rem;}
+.pw-dots{display:flex;justify-content:center;gap:16px;margin-bottom:1.25rem;}
+.pw-dot{width:18px;height:18px;border-radius:50%;background:#e5e3dc;transition:background .2s;}
+.pw-dot.filled{background:#1a1a1a;}
+.pw-error{color:#d94040;font-size:13px;height:20px;margin-bottom:.75rem;}
+.pw-numpad{display:grid;grid-template-columns:repeat(3,76px);gap:12px;justify-content:center;margin-bottom:1.5rem;}
+.pw-key{width:76px;height:76px;border-radius:50%;border:1px solid #d0cec7;background:#fff;font-size:23px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s;color:#1a1a1a;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+.pw-key:active{transform:scale(.92);background:#e5e3dc;}
+.pw-key.sm{font-size:13px;color:#888;}
+.admin-wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem 4rem;}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid #e5e3dc;flex-wrap:wrap;gap:10px;}
+.admin-title{font-size:19px;font-weight:600;}
+.admin-sub{font-size:12px;color:#888;margin-top:2px;}
+.badge-count{background:#1a1a1a;color:#fff;font-size:12px;padding:3px 12px;border-radius:99px;}
+.new-badge{background:#fdf0f0;color:#d94040;font-size:10px;padding:2px 8px;border-radius:99px;margin-left:6px;vertical-align:middle;}
+.empty-state{text-align:center;padding:3.5rem 1rem;color:#aaa;}
+.empty-icon{font-size:44px;margin-bottom:1rem;}
+.app-list{display:flex;flex-direction:column;gap:10px;}
+.app-card{background:#fff;border:1px solid #e5e3dc;border-radius:12px;padding:15px 18px;cursor:pointer;transition:all .15s;}
+.app-card:hover{border-color:#aaa;box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.app-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:8px;flex-wrap:wrap;}
+.app-card-name{font-size:16px;font-weight:600;}
+.app-card-date{font-size:12px;color:#888;}
+.app-card-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+@media(max-width:500px){.app-card-meta{grid-template-columns:1fr 1fr;}}
+.app-meta-item{font-size:12px;color:#666;}
+.app-meta-item span{color:#1a1a1a;font-weight:500;}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:1.5rem 1rem;-webkit-overflow-scrolling:touch;}
+.overlay.hidden{display:none;}
+.modal{background:#fff;border-radius:14px;width:100%;max-width:700px;padding:1.75rem;margin:auto;position:relative;}
+.modal-close-btn{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:1px solid #e5e3dc;background:#fff;cursor:pointer;font-size:18px;color:#888;display:flex;align-items:center;justify-content:center;}
+.modal-close-btn:hover{background:#f5f4f0;}
+.modal-name{font-size:19px;font-weight:600;margin-bottom:3px;padding-right:40px;}
+.modal-date{font-size:12px;color:#888;margin-bottom:1.25rem;}
+.detail-sec{margin-bottom:1.25rem;}
+.detail-sec-title{font-size:13px;font-weight:600;color:#888;padding-bottom:5px;border-bottom:1px solid #e5e3dc;margin-bottom:8px;}
+.detail-row{display:flex;gap:10px;padding:5px 0;font-size:13px;border-bottom:1px solid #f0ede8;}
+.detail-row:last-child{border-bottom:none;}
+.dl{color:#888;min-width:120px;flex-shrink:0;}
+.dv{color:#1a1a1a;font-weight:500;word-break:break-all;white-space:pre-wrap;}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid #e5e3dc;flex-wrap:wrap;}
+.sheets-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#1a5276;text-decoration:none;padding:8px 14px;background:#eef4fb;border-radius:8px;border:1px solid #c5daf5;}
+.sheets-link:hover{background:#ddeaf7;}
+@media print{
+  .admin-link,.progress-wrap,.pw-wrap,.admin-wrap,.modal-footer,.modal-close-btn{display:none!important;}
+  .overlay{display:block!important;background:none!important;position:static!important;padding:0!important;}
+  .overlay.hidden{display:none!important;}
+  .modal{box-shadow:none!important;border:none!important;max-width:100%!important;padding:0!important;}
+  body{background:#fff!important;}
+  #page-form,#page-pw,#page-admin{display:none!important;}
+}
+</style>
+</head>
+<body>
+
+<div class="page active" id="page-form">
+<div class="wrap">
+  <div class="admin-link"><a onclick="showPw()">管理者ログイン</a></div>
+  <div class="welcome-card">
+    <div class="welcome-logo">有限会社施行サービス</div>
+    <div class="welcome-title">入社手続きフォームへようこそ</div>
+    <div class="welcome-body">このフォームに必要事項を入力して送信してください。<br>わからない項目は空欄のまま次へ進んでいただいて構いません。<br><strong>所要時間の目安：約10〜15分</strong></div>
+  </div>
+  <div class="progress-wrap" id="prog-wrap">
+    <div class="progress-label"><span id="step-lbl">STEP 1／5　氏名・連絡先</span><span id="pct-lbl">20%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="prog" style="width:20%"></div></div>
+  </div>
+
+  <!-- S1 -->
+  <div class="section active" id="s1">
+    <div class="step-label">あなたのことを教えてください</div>
+    <div class="step-desc">氏名・住所・連絡先を入力してください。</div>
+    <div class="field-group">
+      <div class="group-title">氏名</div>
+      <div class="field-row">
+        <div class="field"><label>姓（漢字）<span class="req">必須</span></label><input type="text" id="sei" placeholder="例：山田" autocomplete="family-name"></div>
+        <div class="field"><label>名（漢字）<span class="req">必須</span></label><input type="text" id="mei" placeholder="例：太郎" autocomplete="given-name"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>姓（フリガナ）<span class="req">必須</span></label><input type="text" id="sei_k" placeholder="例：ヤマダ"></div>
+        <div class="field"><label>名（フリガナ）<span class="req">必須</span></label><input type="text" id="mei_k" placeholder="例：タロウ"></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <div class="group-title">基本情報</div>
+      <div class="field-row">
+        <div class="field"><label>生年月日<span class="req">必須</span></label><input type="date" id="bday"></div>
+        <div class="field"><label>性別<span class="req">必須</span></label><select id="gender"><option value="">選んでください</option><option>男性</option><option>女性</option><option>その他</option></select></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>国籍<span class="opt">任意</span></label><input type="text" id="nation" value="日本"></div>
+        <div class="field"><label>最終学歴<span class="req">必須</span></label><select id="edu"><option value="">選んでください</option><option>中学校卒業</option><option>高校卒業</option><option>専門学校卒業</option><option>短期大学卒業</option><option>大学卒業</option><option>大学院修了</option><option>その他</option></select></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <div class="group-title">現住所</div>
+      <div class="field-row">
+        <div class="field"><label>郵便番号<span class="req">必須</span></label><input type="text" id="zip" placeholder="例：398-0002" maxlength="8" inputmode="numeric"></div>
+        <div class="field"><label>都道府県<span class="req">必須</span></label><select id="pref"><option value="">選択</option><option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option><option>山形県</option><option>福島県</option><option>茨城県</option><option>栃木県</option><option>群馬県</option><option>埼玉県</option><option>千葉県</option><option>東京都</option><option>神奈川県</option><option>新潟県</option><option>富山県</option><option>石川県</option><option>福井県</option><option>山梨県</option><option>長野県</option><option>岐阜県</option><option>静岡県</option><option>愛知県</option><option>三重県</option><option>滋賀県</option><option>京都府</option><option>大阪府</option><option>兵庫県</option><option>奈良県</option><option>和歌山県</option><option>鳥取県</option><option>島根県</option><option>岡山県</option><option>広島県</option><option>山口県</option><option>徳島県</option><option>香川県</option><option>愛媛県</option><option>高知県</option><option>福岡県</option><option>佐賀県</option><option>長崎県</option><option>熊本県</option><option>大分県</option><option>宮崎県</option><option>鹿児島県</option><option>沖縄県</option></select></div>
+      </div>
+      <div class="field"><label>市区町村・番地<span class="req">必須</span></label><input type="text" id="addr1" placeholder="例：大町市大字大町3685番地"></div>
+      <div class="field"><label>建物名・部屋番号<span class="opt">任意</span></label><input type="text" id="addr2" placeholder="例：○○アパート 201号室"></div>
+    </div>
+    <div class="field-group">
+      <div class="group-title">連絡先</div>
+      <div class="field-row">
+        <div class="field"><label>携帯電話番号<span class="req">必須</span></label><input type="tel" id="mobile" placeholder="090-1234-5678" inputmode="tel"></div>
+        <div class="field"><label>自宅電話番号<span class="opt">任意</span></label><input type="tel" id="tel_h" placeholder="0261-22-0000" inputmode="tel"></div>
+      </div>
+      <div class="field"><label>メールアドレス<span class="req">必須</span></label><input type="email" id="email" placeholder="例：taro.yamada@example.com" inputmode="email"><div class="field-hint">担当者からの連絡に使用します。</div></div>
+    </div>
+    <div class="btn-row"><span></span><button class="btn primary" onclick="go(2)">次へ進む →</button></div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <div class="step-label">雇用・給与に関する情報</div>
+    <div class="step-desc">入社条件について確認した内容を入力してください。</div>
+    <div class="notice info">📋 内定通知書をお手元にご用意いただくとスムーズです。</div>
+    <div class="field-group">
+      <div class="group-title">入社情報</div>
+      <div class="field-row">
+        <div class="field"><label>入社予定日<span class="req">必須</span></label><input type="date" id="hdate"></div>
+        <div class="field"><label>雇用形態<span class="req">必須</span></label><select id="etype"><option value="">選んでください</option><option>正社員（月給）</option><option>正社員（日給）</option><option>契約社員</option><option>パートタイマー</option><option>アルバイト</option></select></div>
+      </div>
+      <div class="field"><label>担当予定の業務・部署<span class="opt">任意</span></label><input type="text" id="dept" placeholder="例：施工部（不明な場合は空欄でOK）"></div>
+    </div>
+    <div class="field-group">
+      <div class="group-title">通勤方法</div>
+      <div class="field-row">
+        <div class="field"><label>主な通勤手段<span class="req">必須</span></label><select id="commute"><option value="">選んでください</option><option>徒歩</option><option>自転車</option><option>マイカー（自動車）</option><option>バイク・原付</option><option>電車・バス（定期券）</option><option>その他</option></select></div>
+        <div class="field"><label>通勤距離（片道）<span class="opt">任意</span></label><input type="text" id="dist" placeholder="例：12km"><div class="field-hint">通勤手当の計算に使用します</div></div>
+      </div>
+      <div class="field"><label>マイカー通勤の場合：車種とナンバー<span class="opt">任意</span></label><input type="text" id="car" placeholder="例：ホンダ フィット／長野 300 あ 0000"></div>
+    </div>
+    <div class="field-group">
+      <div class="group-title">給与振込口座</div>
+      <div class="notice info">💳 給与は毎月25日に振り込まれます。振込口座は <strong>八十二銀行指定</strong> です。</div>
+      <div class="field-row">
+        <div class="field"><label>銀行名</label><input type="text" id="bank" value="八十二銀行" readonly style="background:#f5f4f0;color:#888;cursor:not-allowed;"></div>
+        <div class="field"><label>支店名<span class="req">必須</span></label><select id="branch"><option value="">支店を選んでください</option><option>大町支店</option><option>松本支店</option><option>長野支店</option><option>上田支店</option><option>飯田支店</option><option>諏訪支店</option><option>岡谷支店</option><option>塩尻支店</option><option>伊那支店</option><option>駒ヶ根支店</option><option>佐久支店</option><option>小諸支店</option><option>中野支店</option><option>飯山支店</option><option>白馬支店</option><option>池田支店</option><option>木曽支店</option><option>その他</option></select><div class="field-hint">一覧にない場合は「その他」を選びメモ欄に支店名をご記入ください</div></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>口座種別<span class="req">必須</span></label><select id="btype"><option value="">選択</option><option>普通</option><option>当座</option></select></div>
+        <div class="field"><label>口座番号<span class="req">必須</span></label><input type="text" id="bnum" placeholder="例：1234567" inputmode="numeric"></div>
+      </div>
+      <div class="field"><label>口座名義（カタカナ）<span class="req">必須</span></label><input type="text" id="bname" placeholder="例：ヤマダ タロウ"><div class="field-hint">通帳に記載のカタカナ表記のままご入力ください</div></div>
+    </div>
+    <div class="field-group">
+      <div class="group-title">社会保険</div>
+      <div class="field"><label>健康保険の状況<span class="req">必須</span></label><select id="hins"><option value="">選んでください</option><option>新たに社会保険に加入（初めて）</option><option>前職の社会保険から切り替え</option><option>家族の扶養から切り替え</option><option>国民健康保険から切り替え</option><option>加入しない（パート等）</option></select></div>
+    </div>
+    <div class="btn-row"><button class="btn ghost" onclick="go(1)">← 戻る</button><button class="btn primary" onclick="go(3)">次へ進む →</button></div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <div class="step-label">緊急連絡先・家族情報</div>
+    <div class="step-desc">万が一の際に連絡できる方と、身元保証人の情報を入力してください。</div>
+    <div class="field-group">
+      <div class="group-title">緊急連絡先</div>
+      <div class="notice info">🆘 もしものときに会社から連絡する方です。</div>
+      <div class="field-row">
+        <div class="field"><label>氏名<span class="req">必須</span></label><input type="text" id="en" placeholder="例：山田 花子"></div>
+        <div class="field"><label>続柄<span class="req">必須</span></label><input type="text" id="er" placeholder="例：配偶者、母、父"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>電話番号<span class="req">必須</span></label><input type="tel" id="et" placeholder="例：090-0000-0000" inputmode="tel"></div>
+        <div class="field"><label>住所（本人と異なる場合）<span class="opt">任意</span></label><input type="text" id="ea" placeholder="例：長野県松本市…"></div>
+      </div>
+    </div>
+    <div class="field-group">
+      <div class="group-title">身元保証人</div>
+      <div class="notice info">📝 就業規則の規定により、入社時に身元保証人が必要です。</div>
+      <div class="field-row">
+        <div class="field"><label>氏名<span class="req">必須</span></label><input type="text" id="gn" placeholder="例：山田 次郎"></div>
+        <div class="field"><label>続柄<span class="req">必須</span></label><input type="text" id="gr" placeholder="例：父"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>電話番号<span class="req">必須</span></label><input type="tel" id="gt" placeholder="例：0261-00-0000" inputmode="tel"></div>
+        <div class="field"><label>職業<span class="opt">任意</span></label><input type="text" id="gj" placeholder="例：会社員"></div>
+      </div>
+      <div class="field"><label>住所<span class="req">必須</span></label><input type="text" id="ga" placeholder="例：長野県大町市…"></div>
+    </div>
+    <div class="field-group">
+      <div class="group-title">扶養家族（家族手当の申請）</div>
+      <div class="field-row">
+        <div class="field"><label>配偶者<span class="opt">任意</span></label><select id="spouse"><option value="なし">なし</option><option value="あり（扶養内）">あり（扶養内）</option><option value="あり（扶養外）">あり（扶養外）</option></select></div>
+        <div class="field"><label>子どもの人数<span class="opt">任意</span></label><select id="kids"><option value="0人">0人</option><option value="1人">1人</option><option value="2人">2人</option><option value="3人（上限）">3人（上限）</option></select></div>
+      </div>
+      <div class="field"><label>扶養家族の氏名・続柄・生年月日<span class="opt">任意</span></label><textarea id="deps" placeholder="例：山田 花子 / 配偶者 / 1990年1月1日生&#10;（いない場合は空欄でOK）"></textarea></div>
+    </div>
+    <div class="field-group">
+      <div class="group-title">前職について（ある場合のみ）</div>
+      <div class="field-row">
+        <div class="field"><label>前職の会社名<span class="opt">任意</span></label><input type="text" id="pc" placeholder="例：○○建設株式会社"></div>
+        <div class="field"><label>退職年月<span class="opt">任意</span></label><input type="month" id="pq"></div>
+      </div>
+    </div>
+    <div class="btn-row"><button class="btn ghost" onclick="go(2)">← 戻る</button><button class="btn primary" onclick="go(4)">次へ進む →</button></div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <div class="step-label">書類の提出</div>
+    <div class="step-desc">必要な書類にチェックを入れてください。</div>
+    <div class="notice info">📱 スマートフォンで書類を写真に撮ってアップロードできます。</div>
+    <div class="field-group">
+      <div class="group-title">全員が提出する書類</div>
+      <div class="doc-list">
+        <label class="doc-item" onclick="chk(this)"><input type="checkbox" value="身元保証書"><div class="doc-item-body"><div class="doc-item-title">身元保証書 <span class="doc-badge must">必須</span></div><div class="doc-item-note">保証人の署名・捺印が必要です。</div></div></label>
+        <label class="doc-item" onclick="chk(this)"><input type="checkbox" value="住所届（住民票）"><div class="doc-item-body"><div class="doc-item-title">住所届（住民票） <span class="doc-badge must">必須</span></div><div class="doc-item-note">発行から3ヵ月以内のもの。</div></div></label>
+        <label class="doc-item" onclick="chk(this)"><input type="checkbox" value="履歴書"><div class="doc-item-body"><div class="doc-item-title">履歴書 <span class="doc-badge must">必須</span></div><div class="doc-item-note">写真貼付のこと。</div></div></label>
+        <label class="doc-item" onclick="chk(this)"><input type="checkbox" value="扶養控除等申告書"><div class="doc-item-body"><div class="doc-item-title">扶養控除等申告書（扶養親族届） <span class="doc-badge must">必須</span></div><div class="doc-item-note">扶養家族がいない場合も提出が必要です。</div></div></label>
+        <label class="doc-item" onclick="chk(this)"><input type="checkbox" value="マイナンバー提出"><div class="doc-item-body"><div class="doc-item-title">マイナンバー（個人番号）の提出 <span class="doc-badge must">必須</span></div><div class="doc-item-note">マイナンバーカードの表裏コピー等。</div></div></label>
+        <label class="doc-item" onclick="chk(this)"><input type="checkbox" value="給与振込口座の通帳コピー"><div class="doc-item-body"><div class="doc-item-title">給与振込口座の通帳コピー <span class="doc-badge must">必須</span></div><div class="doc-item-note">口座番号・名義人が確認できるページ。</div></div></label>
+      </div>
+    </div>
+    <div class="field-group" style="margin-top:1.25rem;">
+      <div class="group-title">該当する方のみ提出する書類</div>
+      <div class="doc-list">
+        <label class="doc-item" onclick="chk(this)"><input type="checkbox" value="源泉徴収票"><div class="doc-item-body"><div class="doc-item-title">源泉徴収票 <span class="doc-badge cond">前職がある方</span></div><div class="doc-item-note">前職の会社から発行されたもの（当年分）。</div></div></label>
+        <label class="doc-item" onclick="chk(this)"><input type="checkbox" value="雇用保険被保険者証"><div class="doc-item-body"><div class="doc-item-title">雇用保険被保険者証 <span class="doc-badge cond">前職がある方</span></div></div></label>
+        <label class="doc-item" onclick="chk(this)"><input type="checkbox" value="年金手帳・基礎年金番号通知書"><div class="doc-item-body"><div class="doc-item-title">年金手帳 / 基礎年金番号通知書 <span class="doc-badge cond">厚生年金加入者</span></div></div></label>
+        <label class="doc-item" onclick="chk(this)"><input type="checkbox" value="健康保険資格喪失証明書"><div class="doc-item-body"><div class="doc-item-title">健康保険資格喪失証明書 <span class="doc-badge cond">前職の健保から切替の方</span></div></div></label>
+        <label class="doc-item" onclick="chk(this)"><input type="checkbox" value="運転免許証コピー"><div class="doc-item-body"><div class="doc-item-title">運転免許証のコピー（表・裏） <span class="doc-badge cond">マイカー通勤 / 業務で運転する方</span></div></div></label>
+        <label class="doc-item" onclick="chk(this)"><input type="checkbox" value="資格・免許証コピー"><div class="doc-item-body"><div class="doc-item-title">資格・免許証のコピー <span class="doc-badge cond">業務関連資格をお持ちの方</span></div><div class="doc-item-note">例：施工管理技士、危険物取扱者 等</div></div></label>
+      </div>
+    </div>
+    <div class="field-group">
+      <div class="group-title">担当者へのメモ・質問（任意）</div>
+      <textarea id="memo" placeholder="提出できない書類がある場合や、ご不明な点があれば自由にご記入ください。"></textarea>
+    </div>
+    <div class="btn-row"><button class="btn ghost" onclick="go(3)">← 戻る</button><button class="btn primary" onclick="showConfirm()">確認画面へ →</button></div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <div class="step-label">送信前に確認してください</div>
+    <div class="step-desc">内容をご確認ください。修正は「戻る」ボタンで前のページに戻れます。</div>
+    <div class="confirm-block">
+      <div class="confirm-block-title">氏名・連絡先</div>
+      <div class="confirm-row"><span class="lbl">氏名</span><span class="val" id="c1"></span></div>
+      <div class="confirm-row"><span class="lbl">フリガナ</span><span class="val" id="c2"></span></div>
+      <div class="confirm-row"><span class="lbl">生年月日</span><span class="val" id="c3"></span></div>
+      <div class="confirm-row"><span class="lbl">住所</span><span class="val" id="c4"></span></div>
+      <div class="confirm-row"><span class="lbl">携帯電話</span><span class="val" id="c5"></span></div>
+      <div class="confirm-row"><span class="lbl">メール</span><span class="val" id="c6"></span></div>
+    </div>
+    <div class="confirm-block">
+      <div class="confirm-block-title">雇用・給与</div>
+      <div class="confirm-row"><span class="lbl">入社予定日</span><span class="val" id="c7"></span></div>
+      <div class="confirm-row"><span class="lbl">雇用形態</span><span class="val" id="c8"></span></div>
+      <div class="confirm-row"><span class="lbl">通勤方法</span><span class="val" id="c9"></span></div>
+      <div class="confirm-row"><span class="lbl">振込口座</span><span class="val" id="c10"></span></div>
+    </div>
+    <div class="confirm-block">
+      <div class="confirm-block-title">緊急連絡先・身元保証人</div>
+      <div class="confirm-row"><span class="lbl">緊急連絡先</span><span class="val" id="c11"></span></div>
+      <div class="confirm-row"><span class="lbl">身元保証人</span><span class="val" id="c12"></span></div>
+      <div class="confirm-row"><span class="lbl">扶養家族</span><span class="val" id="c13"></span></div>
+    </div>
+    <div class="confirm-block">
+      <div class="confirm-block-title">提出書類（チェック済み）</div>
+      <div id="c14" style="font-size:13px;color:#555;line-height:1.9;"></div>
+    </div>
+    <div class="notice warn">⚠️ 送信後の変更は担当者（TEL：0261-22-1320）までご連絡ください。</div>
+    <div class="btn-row"><button class="btn ghost" onclick="go(4)">← 戻る</button><button class="btn primary" id="submit-btn" onclick="submitForm()">送信する</button></div>
+  </div>
+
+  <!-- 完了 -->
+  <div class="section" id="s_done">
+    <div class="complete-wrap">
+      <div class="check-circle"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="complete-h">送信完了しました！</div>
+      <div class="complete-p">ご入力いただきありがとうございます。<br>有限会社施行サービス 総務担当者が内容を確認し、<br>3営業日以内にご登録のメールアドレスへご連絡いたします。</div>
+      <div class="complete-note">
+        <strong>入社日までにご準備いただくこと</strong><br>
+        ・チェックした書類の原本または鮮明なコピーをご持参ください<br>
+        ・身元保証書は保証人の方にご署名・捺印をいただいてください<br>
+        ・ご不明な点は <strong>0261-22-1320（総務）</strong> までお気軽にご連絡ください
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- PASSWORD PAGE -->
+<div class="page" id="page-pw">
+<div class="pw-wrap">
+  <div class="pw-logo">有限会社施行サービス</div>
+  <div class="pw-title">管理者ログイン</div>
+  <div class="pw-sub">4桁のパスワードを入力してください</div>
+  <div class="pw-dots">
+    <div class="pw-dot" id="d0"></div><div class="pw-dot" id="d1"></div>
+    <div class="pw-dot" id="d2"></div><div class="pw-dot" id="d3"></div>
+  </div>
+  <div class="pw-error" id="pw-err"></div>
+  <div class="pw-numpad">
+    <button class="pw-key" onclick="pk('1')">1</button>
+    <button class="pw-key" onclick="pk('2')">2</button>
+    <button class="pw-key" onclick="pk('3')">3</button>
+    <button class="pw-key" onclick="pk('4')">4</button>
+    <button class="pw-key" onclick="pk('5')">5</button>
+    <button class="pw-key" onclick="pk('6')">6</button>
+    <button class="pw-key" onclick="pk('7')">7</button>
+    <button class="pw-key" onclick="pk('8')">8</button>
+    <button class="pw-key" onclick="pk('9')">9</button>
+    <button class="pw-key sm" onclick="showPage('page-form')">戻る</button>
+    <button class="pw-key" onclick="pk('0')">0</button>
+    <button class="pw-key sm" onclick="pd()">⌫</button>
+  </div>
+</div>
+</div>
+
+<!-- ADMIN PAGE -->
+<div class="page" id="page-admin">
+<div class="admin-wrap">
+  <div class="admin-header">
+    <div>
+      <div class="admin-title">入社申請 管理画面</div>
+      <div class="admin-sub">有限会社施行サービス　総務担当者専用</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <span class="badge-count" id="app-count">0件</span>
+      <a class="sheets-link" href="https://docs.google.com/spreadsheets/d/1RFiZTJwSaa9tQI3UpwMIJple2ETKfgFM2Ntue8O9lCM/edit" target="_blank">📊 スプレッドシートを開く</a>
+      <button class="btn" onclick="logout()">ログアウト</button>
+    </div>
+  </div>
+  <div class="notice info" style="margin-bottom:1.5rem;">
+    📊 申請データはGoogleスプレッドシートに自動保存されています。<br>
+    上の「スプレッドシートを開く」ボタンからどのPC・スマホでも確認・印刷できます。
+  </div>
+  <div id="admin-list"></div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay hidden" id="overlay">
+  <div class="modal" id="modal-box">
+    <button class="modal-close-btn" onclick="closeModal()">×</button>
+    <div id="modal-content"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">閉じる</button>
+      <button class="btn primary" onclick="window.print()">🖨 印刷する</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PASS='0948';
+const GAS_URL='https://script.google.com/macros/s/AKfycbz4C7npNxQNkkbfv3zsqDZTAwtGEGz5meJzyTlxAmxcrTd-NLJWZ__vqWZEKJQs3kVp/exec';
+const KEY='seiko_apps_v3';
+let pw='', curId=null;
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+const SN=['氏名・連絡先','雇用・給与情報','緊急連絡先・家族','書類の提出','確認・送信'];
+function go(n){
+  ['s1','s2','s3','s4','s5'].forEach(s=>document.getElementById(s).classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  const p=Math.round(n/5*100);
+  document.getElementById('prog').style.width=p+'%';
+  document.getElementById('step-lbl').textContent='STEP '+n+'／5　'+SN[n-1];
+  document.getElementById('pct-lbl').textContent=p+'%';
+  document.getElementById('prog-wrap').style.display='';
+  window.scrollTo(0,0);
+}
+function chk(l){const c=l.querySelector('input[type=checkbox]');setTimeout(()=>l.classList.toggle('checked',c.checked),0);}
+function g(id){return(document.getElementById(id)||{}).value||'';}
+
+function showConfirm(){
+  document.getElementById('c1').textContent=(g('sei')+' '+g('mei')).trim()||'—';
+  document.getElementById('c2').textContent=(g('sei_k')+' '+g('mei_k')).trim()||'—';
+  document.getElementById('c3').textContent=g('bday')||'—';
+  document.getElementById('c4').textContent=('〒'+g('zip')+' '+g('pref')+g('addr1')+(g('addr2')?' '+g('addr2'):'')).trim();
+  document.getElementById('c5').textContent=g('mobile')||'—';
+  document.getElementById('c6').textContent=g('email')||'—';
+  document.getElementById('c7').textContent=g('hdate')||'—';
+  document.getElementById('c8').textContent=g('etype')||'—';
+  document.getElementById('c9').textContent=(g('commute')+(g('dist')?' / '+g('dist'):'')).trim()||'—';
+  document.getElementById('c10').textContent=('八十二銀行 '+g('branch')+' '+g('btype')+' '+g('bnum')+' '+g('bname')).trim();
+  document.getElementById('c11').textContent=(g('en')+'（'+g('er')+'）'+g('et')).trim();
+  document.getElementById('c12').textContent=(g('gn')+'（'+g('gr')+'）'+g('gt')).trim();
+  document.getElementById('c13').textContent='配偶者：'+(g('spouse')||'—')+'　子：'+(g('kids')||'—');
+  const docs=Array.from(document.querySelectorAll('.doc-item input:checked')).map(c=>c.value);
+  document.getElementById('c14').textContent=docs.length?docs.join('、'):'（未選択）';
+  go(5);
+}
+
+function submitForm(){
+  const btn=document.getElementById('submit-btn');
+  btn.textContent='送信中…';btn.disabled=true;
+  const data={
+    sei:g('sei'),mei:g('mei'),sei_k:g('sei_k'),mei_k:g('mei_k'),
+    bday:g('bday'),gender:g('gender'),nation:g('nation'),edu:g('edu'),
+    zip:g('zip'),pref:g('pref'),addr1:g('addr1'),addr2:g('addr2'),
+    mobile:g('mobile'),tel_h:g('tel_h'),email:g('email'),
+    hdate:g('hdate'),etype:g('etype'),dept:g('dept'),
+    commute:g('commute'),dist:g('dist'),car:g('car'),
+    branch:g('branch'),btype:g('btype'),bnum:g('bnum'),bname:g('bname'),hins:g('hins'),
+    en:g('en'),er:g('er'),et:g('et'),ea:g('ea'),
+    gn:g('gn'),gr:g('gr'),gt:g('gt'),gj:g('gj'),ga:g('ga'),
+    spouse:g('spouse'),kids:g('kids'),deps:g('deps'),
+    pc:g('pc'),pq:g('pq'),
+    docs:Array.from(document.querySelectorAll('.doc-item input:checked')).map(c=>c.value).join('、'),
+    memo:g('memo')
+  };
+  // ローカルにも保存（管理画面での表示用）
+  const apps=load();
+  apps.unshift({id:Date.now(),submittedAt:new Date().toLocaleString('ja-JP'),isNew:true,...data});
+  save(apps);
+  // Google Sheetsに送信
+  fetch(GAS_URL,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(data)
+  }).then(()=>{
+    showDone();
+  }).catch(()=>{
+    // no-corsのため常にopaqueレスポンスだが送信は成功している
+    showDone();
+  });
+}
+
+function showDone(){
+  ['s1','s2','s3','s4','s5'].forEach(s=>document.getElementById(s).classList.remove('active'));
+  document.getElementById('s_done').classList.add('active');
+  document.getElementById('prog-wrap').style.display='none';
+  window.scrollTo(0,0);
+}
+
+function showPw(){pw='';updateDots();document.getElementById('pw-err').textContent='';showPage('page-pw');}
+function pk(d){
+  if(pw.length>=4)return;
+  pw+=d;updateDots();
+  if(pw.length===4){
+    setTimeout(()=>{
+      if(pw===PASS){showPage('page-admin');renderAdmin();}
+      else{document.getElementById('pw-err').textContent='パスワードが違います';pw='';updateDots();}
+    },200);
+  }
+}
+function pd(){pw=pw.slice(0,-1);updateDots();document.getElementById('pw-err').textContent='';}
+function updateDots(){for(let i=0;i<4;i++)document.getElementById('d'+i).classList.toggle('filled',i<pw.length);}
+function logout(){showPage('page-form');}
+
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||[];}catch(e){return[];}}
+function save(a){localStorage.setItem(KEY,JSON.stringify(a));}
+
+function renderAdmin(){
+  const apps=load();
+  document.getElementById('app-count').textContent=apps.length+'件';
+  const el=document.getElementById('admin-list');
+  if(!apps.length){
+    el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div style="font-size:15px;margin-bottom:8px;">まだ申請データがありません</div><div style="font-size:13px;color:#aaa;">社員が送信するとスプレッドシートに自動保存されます</div></div>';
+    return;
+  }
+  el.innerHTML='<div class="app-list">'+apps.map(a=>`
+    <div class="app-card" onclick="openApp(${a.id})">
+      <div class="app-card-top">
+        <div class="app-card-name">${a.sei||''} ${a.mei||''}&nbsp;<span style="font-size:13px;color:#888;font-weight:400;">${a.sei_k||''} ${a.mei_k||''}</span>${a.isNew?'<span class="new-badge">NEW</span>':''}</div>
+        <div class="app-card-date">📅 ${a.submittedAt}</div>
+      </div>
+      <div class="app-card-meta">
+        <div class="app-meta-item">入社予定日：<span>${a.hdate||'—'}</span></div>
+        <div class="app-meta-item">雇用形態：<span>${a.etype||'—'}</span></div>
+        <div class="app-meta-item">携帯：<span>${a.mobile||'—'}</span></div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+
+function openApp(id){
+  const apps=load();
+  const a=apps.find(x=>x.id===id);if(!a)return;
+  a.isNew=false;save(apps);curId=id;
+  const r=(l,v)=>`<div class="detail-row"><span class="dl">${l}</span><span class="dv">${v||'—'}</span></div>`;
+  document.getElementById('modal-content').innerHTML=`
+    <div class="modal-name">${a.sei||''} ${a.mei||''}</div>
+    <div class="modal-date">申請日時：${a.submittedAt}　フリガナ：${a.sei_k||''} ${a.mei_k||''}</div>
+    <div class="detail-sec"><div class="detail-sec-title">基本情報</div>
+      ${r('生年月日',a.bday)}${r('性別',a.gender)}${r('最終学歴',a.edu)}${r('国籍',a.nation)}</div>
+    <div class="detail-sec"><div class="detail-sec-title">住所・連絡先</div>
+      ${r('住所','〒'+(a.zip||'')+' '+(a.pref||'')+(a.addr1||'')+(a.addr2?' '+a.addr2:''))}
+      ${r('携帯電話',a.mobile)}${r('自宅電話',a.tel_h)}${r('メール',a.email)}</div>
+    <div class="detail-sec"><div class="detail-sec-title">雇用条件</div>
+      ${r('入社予定日',a.hdate)}${r('雇用形態',a.etype)}${r('部署・業務',a.dept)}
+      ${r('通勤方法',(a.commute||'')+(a.dist?' / '+a.dist:'')+(a.car?' / '+a.car:''))}
+      ${r('健康保険',a.hins)}</div>
+    <div class="detail-sec"><div class="detail-sec-title">給与振込口座（八十二銀行）</div>
+      ${r('支店名',a.branch)}${r('口座種別',a.btype)}${r('口座番号',a.bnum)}${r('口座名義',a.bname)}</div>
+    <div class="detail-sec"><div class="detail-sec-title">緊急連絡先</div>
+      ${r('氏名・続柄',(a.en||'')+'（'+(a.er||'')+'）')}${r('電話番号',a.et)}${r('住所',a.ea)}</div>
+    <div class="detail-sec"><div class="detail-sec-title">身元保証人</div>
+      ${r('氏名・続柄',(a.gn||'')+'（'+(a.gr||'')+'）')}${r('電話番号',a.gt)}${r('職業',a.gj)}${r('住所',a.ga)}</div>
+    <div class="detail-sec"><div class="detail-sec-title">家族・前職</div>
+      ${r('配偶者',a.spouse)}${r('子ども',a.kids)}${r('扶養家族詳細',a.deps)}
+      ${r('前職',(a.pc||'')+(a.pq?' / '+a.pq:''))}</div>
+    <div class="detail-sec"><div class="detail-sec-title">提出書類・メモ</div>
+      ${r('チェック済み書類',a.docs)}${r('メモ・質問',a.memo)}</div>`;
+  document.getElementById('overlay').classList.remove('hidden');
+}
+function closeModal(){document.getElementById('overlay').classList.add('hidden');renderAdmin();}
+</script>
+</body>
+</html>
